@@ -1,0 +1,9 @@
+{
+  "extends": "standard",
+  "parser": "babel-eslint",
+  "plugins": ["html"],
+  "rules": {
+    "comma-dangle": [2, "always-multiline"],
+    "operator-linebreak": [2, "before", { "overrides": { "=": "after" } }]
+  }
+}
