@@ -61,7 +61,3 @@ export const modes = [{
 
 export const MIN_DELAY = 100
 export const MAX_DELAY = 600
-
-export const APP_NAME = process.env.APP_NAME
-export const APP_VERSION = process.env.APP_VERSION
-export const APP_LINK = process.env.APP_LINK

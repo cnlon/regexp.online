@@ -1,21 +1,55 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
-const base = require('./webpack/base.js')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const dateFormat = require('./webpack/dateFormat')
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
-const IS_DEBUG = NODE_ENV !== 'production'
+
+const isDebug = NODE_ENV !== 'production'
+
+const TITLE = process.env.npm_package_keywords_0
+const DESCRIPTION = process.env.npm_package_description
+const KEYWORDS = []
+let i = 0
+let keyword = ''
+while ((keyword = process.env['npm_package_keywords_' + String(i++)])) {
+  KEYWORDS.push(keyword)
+}
+const VERSION = process.env.npm_package_version
+const SOURCE_PAGE = process.env.npm_package_repository_url.match(/(https?:\/\/.+)\.git$/)[1]
+const HOME_PAGE = process.env.npm_package_homepage
+const AUTHOR = process.env.npm_package_author_name
+const CONTACT = process.env.npm_package_author_url
+const LICENSE = SOURCE_PAGE + '/blob/master/LICENSE'
 
 module.exports = merge(
-  base,
-  IS_DEBUG ? require('./webpack/dev.js') : require('./webpack/build.js'),
+  require('./webpack/base'),
+  isDebug ? require('./webpack/dev') : require('./webpack/build'),
   {
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
-        'process.env.APP_NAME': JSON.stringify('RegExp online'),
-        'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
-        'process.env.APP_LINK': JSON.stringify('https://github.com/cnlon/regexp.online'),
-      })
-    ]
+        'process.env': {
+          'NODE_ENV': JSON.stringify(NODE_ENV),
+          'TITLE': JSON.stringify(TITLE),
+          'DESCRIPTION': JSON.stringify(DESCRIPTION),
+          'VERSION': JSON.stringify(VERSION),
+          'SOURCE_PAGE': JSON.stringify(SOURCE_PAGE),
+        },
+      }),
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+        minify: isDebug ? {} : {removeComments: true, collapseWhitespace: true},
+        TITLE,
+        DESCRIPTION,
+        KEYWORDS: KEYWORDS.join(', '),
+        AUTHOR,
+        CONTACT,
+        LICENSE,
+        SOURCE_PAGE,
+        HOME_PAGE,
+        CREATE_AT: '2016-10-21 01:30:00 +0800',
+        UPDATE_AT: dateFormat(Date.now(), 'yyyy-MM-dd hh:mm:ss +0800'),
+      }),
+    ],
   }
 )

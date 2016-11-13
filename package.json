@@ -1,30 +1,15 @@
 {
   "name": "regexp.online",
   "version": "0.2.0-alpha",
-  "description": "regexp online",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .js,.vue src",
-    "clear": "rm -rf dist/",
+    "clean": "rm -rf dist/",
     "dev": "webpack-dev-server --inline --hot --port 3020",
-    "prebuild": "npm run clear",
+    "prebuild": "npm run clean",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "postbuild": "cp dist/index.html ./"
-  },
-  "keywords": [
-    "regex",
-    "regexp",
-    "regular",
-    "expression",
-    "online",
-    "regexp.online"
-  ],
-  "author": "lon <longhaohe@gmail.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cnlon/regexp.online.git"
   },
   "dependencies": {
     "core-js": "^2.4.1",
@@ -60,5 +45,32 @@
     "webpack-md5-hash": "^0.0.5",
     "webpack-merge": "^0.15.0",
     "worker-loader": "^0.7.1"
-  }
+  },
+  "description": "RegExp.online 是一个学习、测试正则表达式的工具",
+  "keywords": [
+    "RegExp.online",
+    "正则在线",
+    "regexp",
+    "正则",
+    "online",
+    "在线",
+    "learn",
+    "学习",
+    "test",
+    "测试",
+    "regular expression",
+    "正则表达式",
+    "regex",
+    "regexr"
+  ],
+  "author": "lon <longhaohe@gmail.com> (https://github.com/cnlon)",
+  "homepage": "https://cnlon.github.io/regexp.online",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnlon/regexp.online.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cnlon/regexp.online/issues"
+  },
+  "license": "MIT"
 }

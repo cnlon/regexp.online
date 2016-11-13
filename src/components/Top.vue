@@ -2,8 +2,8 @@
 <div class="top">
   <div class="top-body">
     <h1 class="top-body_title">
-      {{name}}
-      <small>&nbsp;v<a target="_blank" tabindex="-1" :href="link" v-text="version"></small>
+      {{title}}
+      <small>&nbsp;v<a target="_blank" tabindex="-1" :href="sourcePage" v-text="version"></small>
     </h1>
   </div>
   <div class="top-menu">
@@ -14,14 +14,13 @@
 
 <script>
 import {BOX_NAV} from '../types'
-import {APP_NAME, APP_VERSION, APP_LINK} from '../config'
 
 export default {
   data () {
     return {
-      name: APP_NAME,
-      version: APP_VERSION,
-      link: APP_LINK,
+      title: process.env.TITLE,
+      version: process.env.VERSION,
+      sourcePage: process.env.SOURCE_PAGE,
     }
   },
   computed: {
