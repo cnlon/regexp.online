@@ -2,5 +2,14 @@
 
 # RegExp online
 
+To learn & test Regular Expression online
+
+## develop
+
+```bash
+yarn && yarn dev
+```
+
 ## todo
-- A new rich editer using `div` with `contenteditable="true"`
+
+- Deprecated `textarea` and make a new rich editer using `contenteditable="true"`
