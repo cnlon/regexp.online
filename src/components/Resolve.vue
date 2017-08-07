@@ -14,10 +14,10 @@
       @click="toggleModesBox"
     />
     <ul class="select_options">
-      <li v-for="v in allModes">
+      <li v-for="v in allModes" :key="v.value">
         <button class="select_option" @click="setMode(v.value)">
-          <i class="icon_circle" :class="{'checked':isMode(v.value)}"/>
-          <em v-text="v.title"/>
+          <i class="icon_circle" :class="{'checked':isMode(v.value)}"></i>
+          <em v-text="v.title"></em>
         </button>
       </li>
     </ul>

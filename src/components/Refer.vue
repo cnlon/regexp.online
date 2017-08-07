@@ -6,9 +6,10 @@
       <button
         class="refer-exps_item"
         v-for="v in regexps"
+        :key="v.source"
         v-text="v.title"
         @click="setRegexp(v)"
-      />
+      ></button>
     </div>
   </div>
 </div>

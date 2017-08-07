@@ -3,7 +3,10 @@
   <div class="top-body">
     <h1 class="top-body_title">
       {{title}}
-      <small>&nbsp;v<a target="_blank" tabindex="-1" :href="sourcePage" v-text="version"></small>
+      <small>
+        &nbsp;v
+        <a target="_blank" tabindex="-1" :href="sourcePage" v-text="version"></a>
+      </small>
     </h1>
   </div>
   <div class="top-menu">

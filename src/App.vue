@@ -2,7 +2,7 @@
 <div id="app" :class="{'showNav':showingNavBox}">
   <top/>
   <refer/>
-  <bench v-for="uid of instances" :uid="uid"/>
+  <bench v-for="uid of instances" :uid="uid" :key="uid"/>
 </div>
 </template>
 

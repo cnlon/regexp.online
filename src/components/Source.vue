@@ -6,10 +6,10 @@
   <div class="select" :class="{'show':showingFlagsBox}">
     <button class="select_text" tabindex="2" v-text="flags" @click="toggleFlagsBox"/>
     <ul class="select_options">
-      <li v-for="v in allFlags">
+      <li v-for="v in allFlags" :key="v.value">
         <button class="select_option" @click="checkFlag(v.value)">
-          <i class="icon_square" :class="{'checked':isFlagChecked(v.value)}"/>
-          <em v-text="v.value"/>
+          <i class="icon_square" :class="{'checked':isFlagChecked(v.value)}"></i>
+          <em v-text="v.value"></em>
           {{v.title}}
         </button>
       </li>
