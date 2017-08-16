@@ -42,6 +42,7 @@ module.exports = {
     new WebpackMd5Hash(),
     new ExtractTextPlugin('[name].[contenthash:6].css'),
     new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
       compress: {
         warnings: false
       },
