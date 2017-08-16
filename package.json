@@ -8,8 +8,7 @@
     "clean": "rm -rf dist/*",
     "dev": "webpack-dev-server --port 3020 --progress --hot --inline",
     "prebuild": "npm run clean",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "postbuild": "cp dist/index.html ./"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
     "core-js": "^2.5.0",
