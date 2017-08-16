@@ -24,7 +24,7 @@ const LICENSE = SOURCE_PAGE + '/blob/master/LICENSE'
 
 module.exports = merge(
   require('./webpack/base'),
-  isDebug ? require('./webpack/dev') : require('./webpack/build'),
+  isDebug ? require('./webpack/dev') : require('./webpack/prod'),
   {
     plugins: [
       new webpack.DefinePlugin({
@@ -38,7 +38,10 @@ module.exports = merge(
       }),
       new HtmlWebpackPlugin({
         template: './src/index.html',
-        minify: isDebug ? {} : {removeComments: true, collapseWhitespace: true},
+        filename: 'index.html',
+        html5: true,
+        minify: isDebug ? false : {collapseWhitespace: true},
+        cache: isDebug,
         TITLE,
         DESCRIPTION,
         KEYWORDS: KEYWORDS.join(', '),

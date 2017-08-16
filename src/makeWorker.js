@@ -1,7 +1,7 @@
 const MyWorker = require(
   process.env.NODE_ENV === 'production'
-    ? 'worker?name=worker.[chunkhash:6].js!./worker/index.js'
-    : 'worker?name=worker.js!./worker/index.js'
+    ? 'worker-loader?name=worker.[chunkhash:6].js!./worker/index.js'
+    : 'worker-loader?name=worker.js!./worker/index.js'
 )
 
 module.exports = function makeWorker (callback) {

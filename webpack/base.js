@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   entry: {
     app: [
@@ -11,31 +13,19 @@ module.exports = {
     ],
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.vue$/,
-      loader: 'vue',
+      loader: 'vue-loader',
+      options: {
+        preserveWhitespace: false
+      }
     }, {
       test: /\.js$/,
-      loader: 'babel',
-      exclude: /node_modules/,
+      loader: 'babel-loader',
+      include: path.join(__dirname, '..', 'src')
     }, {
       test: /\.json$/,
-      loader: 'json',
-    }],
-  },
-  postcss: function (pack) {
-    return [
-      require('postcss-import')({addDependencyTo: pack}),
-      require('postcss-cssnext'),
-    ]
-  },
-  babel: {
-    presets: [
-      ['es2015', {'loose': true}],
-      'stage-2',
-    ],
-    plugins: [
-      ['transform-builtin-extend', {globals: ['Array'], approximate: true}],
-    ],
-  },
+      loader: 'json-loader',
+    }]
+  }
 }

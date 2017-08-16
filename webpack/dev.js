@@ -1,33 +1,29 @@
+const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
   output: {
-    path: './build',
+    path: path.resolve(__dirname, '../build'),
     filename: '[name].js',
-    publicPath: '/build/',
+    publicPath: '/',
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.css$/,
-      loader: 'vue-style!css!postcss',
-    }],
-  },
-  vue: {
-    loaders: {
-      css: 'vue-style!css!postcss',
-    },
+      use: [
+        'style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1
+          }
+        },
+        'postcss-loader'
+      ]
+    }]
   },
   plugins: [
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
-  devtool: 'eval',
-  devServer: {
-    historyApiFallback: {
-      rewrites: [{
-        from: /^\/$/,
-        to: '/build/',
-      }],
-    },
-    noInfo: true,
-  },
+  devtool: 'eval-source-map'
 }
