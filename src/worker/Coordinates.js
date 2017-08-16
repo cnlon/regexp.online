@@ -1,7 +1,6 @@
 const LINE_BREAK_RE = /\n/g
 
 export default class Coordinates extends Array {
-
   options = {}
 
   resize (options) {
