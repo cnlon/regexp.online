@@ -14,12 +14,6 @@ module.exports = {
   },
   module: {
     rules: [{
-      test: /\.vue$/,
-      loader: 'vue-loader',
-      options: {
-        preserveWhitespace: false
-      }
-    }, {
       test: /\.js$/,
       loader: 'babel-loader',
       include: path.resolve(__dirname, '../src'),
