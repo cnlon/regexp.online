@@ -7,7 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name].[chunkhash:6].js',
-    publicPath: '/dist/'
+    publicPath: '/',
   },
   module: {
     rules: [{
