@@ -22,13 +22,10 @@ module.exports = {
     }, {
       test: /\.js$/,
       loader: 'babel-loader',
-      include: path.join(__dirname, '..', 'src')
+      include: path.resolve(__dirname, '../src'),
     }, {
       test: /\.json$/,
-      loader: 'json-loader',
-    }, {
-      test: path.resolve('./src/share.jpg'),
-      loader: 'file-loader'
+      loader: 'json-loader'
     }]
   }
 }

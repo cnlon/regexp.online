@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const WebpackMd5Hash = require('webpack-md5-hash')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   output: {
@@ -37,6 +38,11 @@ module.exports = {
     new WebpackMd5Hash(),
     new ExtractTextPlugin('[name].[contenthash:6].css'),
     new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
+    new CopyWebpackPlugin([{
+      from: './src/favicon.ico'
+    }, {
+      from: './src/share.jpg'
+    }])
   ],
   devtool: 'source-map'
 }
