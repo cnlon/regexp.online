@@ -26,7 +26,11 @@ module.exports = {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              minimize: true
+              minimize: {
+                discardComments: {
+                  removeAll: true
+                }
+              }
             }
           },
           'postcss-loader'
@@ -37,7 +41,14 @@ module.exports = {
   plugins: [
     new WebpackMd5Hash(),
     new ExtractTextPlugin('[name].[contenthash:6].css'),
-    new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      output: {
+        comments: false
+      }
+    }),
     new CopyWebpackPlugin([{
       from: './src/favicon.ico'
     }, {
