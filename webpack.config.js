@@ -38,6 +38,7 @@ module.exports = merge(
       }),
       new HtmlWebpackPlugin({
         template: './src/index.html',
+        favicon: './src/favicon.ico',
         filename: 'index.html',
         html5: true,
         minify: isDebug ? false : {collapseWhitespace: true},
