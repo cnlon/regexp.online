@@ -71,7 +71,7 @@
   "homepage": "https://regexp.online",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cnlon/regexp.online.git"
+    "url": "https://github.com/cnlon/regexp.online.git"
   },
   "bugs": {
     "url": "https://github.com/cnlon/regexp.online/issues"
