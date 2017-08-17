@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const dateFormat = require('./webpack/dateFormat')
+
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 
@@ -21,6 +21,9 @@ const HOME_PAGE = process.env.npm_package_homepage
 const AUTHOR = process.env.npm_package_author_name
 const CONTACT = process.env.npm_package_author_url
 const LICENSE = SOURCE_PAGE + '/blob/master/LICENSE'
+const CREATE_AT = '2016-10-21T01:30:00+0800'
+const UPDATE_AT = process.env.PUBLISH_DATE || new Date().toISOString()
+
 
 module.exports = merge(
   require('./webpack/base'),
@@ -50,9 +53,9 @@ module.exports = merge(
         LICENSE,
         SOURCE_PAGE,
         HOME_PAGE,
-        CREATE_AT: '2016-10-21 01:30:00 +0800',
-        UPDATE_AT: dateFormat(Date.now(), 'yyyy-MM-dd hh:mm:ss +0800'),
-      }),
-    ],
+        CREATE_AT,
+        UPDATE_AT
+      })
+    ]
   }
 )
