@@ -31,5 +31,8 @@ module.exports = {
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
   ],
-  devtool: 'eval-source-map'
+  devtool: 'eval-source-map',
+  devServer: {
+    host: '0.0.0.0'
+  }
 }
