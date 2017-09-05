@@ -61,26 +61,3 @@ export function throttle (fun, wait = 0, maxWait) {
     throttled.cancel = cancel
     return throttled
 }
-
-/**
- * @param {String} str - string to encode
- * @returns {String}   - encoded string
- */
-
-export function encode (str) {
-    return replace.call(str, ENCODE_REPLACE_RE, ENCODE_REPLACER)
-}
-const replace = String.prototype.replace
-const ENCODE_REPLACE_RE = /[\\|"]/g
-const ENCODE_REPLACER = '\\$&'
-
-/**
- * @param {String} str - string to decode
- * @returns {String}   - decoded string
- */
-
-export function decode (str) {
-    return replace.call(str, DECODE_REPLACE_RE, DECODE_REPLACER)
-}
-const DECODE_REPLACE_RE = /\\([\\|"])/g
-const DECODE_REPLACER = '$1'
