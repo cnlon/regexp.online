@@ -23,7 +23,7 @@
 
 <script>
 import {MIN_DELAY, MAX_DELAY} from '../config'
-import {throttle} from '../util'
+import throttle from '../throttle'
 import store from '../store'
 
 export default {

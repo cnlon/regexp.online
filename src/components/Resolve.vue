@@ -28,7 +28,7 @@
 <script>
 import {BOX_MODES} from '../types'
 import {MIN_DELAY, MAX_DELAY, modes as allModes} from '../config'
-import {throttle} from '../util'
+import throttle from '../throttle'
 
 export default {
     props: ['resolve', 'mode'],

@@ -5,7 +5,7 @@
  * @returns {Function}       - throttled
  */
 
-export function throttle (fun, wait = 0, maxWait) {
+export default function throttle (fun, wait = 0, maxWait) {
     let waitTimer, throttled, cancel, self
     let args = []
     if (maxWait && maxWait > wait) {

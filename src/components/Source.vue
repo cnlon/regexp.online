@@ -21,7 +21,7 @@
 <script>
 import {BOX_FLAGS} from '../types'
 import {MIN_DELAY, MAX_DELAY, flags as allFlags} from '../config'
-import {throttle} from '../util'
+import throttle from '../throttle'
 
 const allFlagsArray = allFlags.map(v => v.value)
 
