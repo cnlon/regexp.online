@@ -13,7 +13,7 @@ const KEYWORDS = []
 let i = 0
 let keyword = ''
 while ((keyword = process.env['npm_package_keywords_' + String(i++)])) {
-  KEYWORDS.push(keyword)
+    KEYWORDS.push(keyword)
 }
 const VERSION = process.env.npm_package_version
 const SOURCE_PAGE = process.env.npm_package_repository_url.match(/(https?:\/\/.+)\.git$/)[1]
@@ -26,36 +26,37 @@ const UPDATE_AT = process.env.PUBLISH_DATE || new Date().toISOString()
 
 
 module.exports = merge(
-  require('./webpack/base'),
-  isDebug ? require('./webpack/dev') : require('./webpack/prod'),
-  {
-    plugins: [
-      new webpack.DefinePlugin({
-        'process.env': {
-          'NODE_ENV': JSON.stringify(NODE_ENV),
-          'TITLE': JSON.stringify(TITLE),
-          'DESCRIPTION': JSON.stringify(DESCRIPTION),
-          'VERSION': JSON.stringify(VERSION),
-          'SOURCE_PAGE': JSON.stringify(SOURCE_PAGE),
-        },
-      }),
-      new HtmlWebpackPlugin({
-        template: './src/index.html',
-        filename: 'index.html',
-        html5: true,
-        minify: isDebug ? false : {collapseWhitespace: true},
-        cache: isDebug,
-        TITLE,
-        DESCRIPTION,
-        KEYWORDS: KEYWORDS.join(', '),
-        AUTHOR,
-        CONTACT,
-        LICENSE,
-        SOURCE_PAGE,
-        HOME_PAGE,
-        CREATE_AT,
-        UPDATE_AT
-      })
-    ]
-  }
+    require('./webpack/base'),
+    isDebug ? require('./webpack/dev') : require('./webpack/prod'), {
+        plugins: [
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'NODE_ENV': JSON.stringify(NODE_ENV),
+                    'TITLE': JSON.stringify(TITLE),
+                    'DESCRIPTION': JSON.stringify(DESCRIPTION),
+                    'VERSION': JSON.stringify(VERSION),
+                    'SOURCE_PAGE': JSON.stringify(SOURCE_PAGE),
+                },
+            }),
+            new HtmlWebpackPlugin({
+                template: './src/index.html',
+                filename: 'index.html',
+                html5: true,
+                minify: isDebug ? false : {
+                    collapseWhitespace: true
+                },
+                cache: isDebug,
+                TITLE,
+                DESCRIPTION,
+                KEYWORDS: KEYWORDS.join(', '),
+                AUTHOR,
+                CONTACT,
+                LICENSE,
+                SOURCE_PAGE,
+                HOME_PAGE,
+                CREATE_AT,
+                UPDATE_AT
+            })
+        ]
+    }
 )
