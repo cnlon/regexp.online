@@ -2,13 +2,14 @@ const path = require('path')
 const webpack = require('webpack')
 const WebpackMd5Hash = require('webpack-md5-hash')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+const PUBLIC_PATH = process.env.PUBLIC_PATH || '/'
 
 module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name].[chunkhash:6].js',
-    publicPath: '/',
+    publicPath: PUBLIC_PATH,
   },
   module: {
     rules: [{
@@ -50,12 +51,7 @@ module.exports = {
       output: {
         comments: false
       }
-    }),
-    new CopyWebpackPlugin([{
-      from: './src/favicon.ico'
-    }, {
-      from: './src/share.jpg'
-    }])
+    })
   ],
   devtool: 'source-map'
 }

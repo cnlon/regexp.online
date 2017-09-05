@@ -20,6 +20,12 @@ module.exports = {
     }, {
       test: /\.json$/,
       loader: 'json-loader'
+    }, {
+      test: /(?:favicon\.ico|share\.jpg)$/,
+      loader: 'file-loader',
+      options: {
+        name: '[name].[ext]'
+      }
     }]
   }
 }

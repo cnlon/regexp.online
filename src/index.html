@@ -12,12 +12,12 @@
   <meta name="author" content="<%= htmlWebpackPlugin.options.AUTHOR %>">
   <meta name="contact" content="<%= htmlWebpackPlugin.options.CONTACT %>">
   <link rel="copyright" href="<%= htmlWebpackPlugin.options.LICENSE %>">
-  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="<%= require('./favicon.ico') %>">
   <meta property="og:type" content="webpage">
   <meta property="og:url" content="<%= htmlWebpackPlugin.options.HOME_PAGE %>">
   <meta property="og:title" content="<%= htmlWebpackPlugin.options.TITLE %>">
   <meta property="og:description" content="<%= htmlWebpackPlugin.options.DESCRIPTION %>">
-  <meta property="og:image" content="/share.jpg">
+  <meta property="og:image" content="<%= require('./share.jpg') %>">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:site_name" content="<%= htmlWebpackPlugin.options.TITLE %>">
   <meta property="og:locale" content="zh-CN">
