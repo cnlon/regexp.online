@@ -23,7 +23,8 @@
 
 <script>
 import {MIN_DELAY, MAX_DELAY} from '../config'
-import throttle from '../throttle'
+import throttle from 'lodash-es/throttle'
+import debounce from 'lodash-es/debounce'
 import store from '../store'
 
 export default {
@@ -52,7 +53,7 @@ export default {
             this.canvas.width = offsetWidth
             this.initialize()
         },
-        initialize: throttle(function () {
+        initialize: debounce(function () {
             this.initializeImmediately()
         }, MIN_DELAY),
         initializeImmediately () {
@@ -72,7 +73,7 @@ export default {
         update: throttle(function (event) {
             const value = event.target.value || event.target.textContent
             this.$emit('update', {name: 'input', value})
-        }, MIN_DELAY, MAX_DELAY),
+        }, MAX_DELAY),
         syncScroll (event) {
             this.canvas.style.top = -this.textarea.scrollTop + 'px'
             if (this.textarea.scrollHeight > this.canvas.height) {

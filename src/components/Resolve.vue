@@ -27,8 +27,8 @@
 
 <script>
 import {BOX_MODES} from '../types'
-import {MIN_DELAY, MAX_DELAY, modes as allModes} from '../config'
-import throttle from '../throttle'
+import {MAX_DELAY, modes as allModes} from '../config'
+import throttle from 'lodash-es/throttle'
 
 export default {
     props: ['resolve', 'mode'],
@@ -56,7 +56,7 @@ export default {
         update: throttle(function (event) {
             const value = event.target.value
             this.$emit('update', {name: 'resolve', value})
-        }, MIN_DELAY, MAX_DELAY),
+        }, MAX_DELAY),
         isMode (mode) {
             return this.mode === mode
         },

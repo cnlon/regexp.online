@@ -20,8 +20,8 @@
 
 <script>
 import {BOX_FLAGS} from '../types'
-import {MIN_DELAY, MAX_DELAY, flags as allFlags} from '../config'
-import throttle from '../throttle'
+import {MAX_DELAY, flags as allFlags} from '../config'
+import throttle from 'lodash-es/throttle'
 
 const allFlagsArray = allFlags.map(v => v.value)
 
@@ -42,7 +42,7 @@ export default {
         update: throttle(function (event) {
             const value = event.target.value
             this.$emit('update', {name: 'source', value})
-        }, MIN_DELAY, MAX_DELAY),
+        }, MAX_DELAY),
         isFlagChecked (flag) {
             const flags = this.flags
             return flags.includes(flag)
