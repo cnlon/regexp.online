@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "core-js": "2.5",
+    "lodash-es": "4.17",
     "normalize.css": "7",
     "vue": "2.4",
     "vuex": "2.4"
