@@ -32,7 +32,6 @@ import makeWorker from '../makeWorker'
 import bus from '../bus'
 
 export default {
-    props: ['uid'],
     data () {
         return {
             showSolution: false,
@@ -58,9 +57,7 @@ export default {
                     this.sourceIsError = true
                     break
                 case READY:
-                    if (this.uid === 0) {
-                        this.setRegexp(demoRegexp)
-                    }
+                    this.setRegexp(demoRegexp)
                     break
             }
         })
