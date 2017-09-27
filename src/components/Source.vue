@@ -1,27 +1,38 @@
 <template>
 <div class="input-box">
     <div class="input">
-        <input tabindex="1" :value="source" @input="update" autofocus>
+        <input tabindex="1"
+            :value="source"
+            @input="update"
+            autofocus>
     </div>
     <div class="select" :class="{'show':showingFlagsBox}">
-        <button class="select_text" tabindex="2" v-text="flags" @click="toggleFlagsBox"/>
-        <ul class="select_options">
-            <li v-for="v in allFlags" :key="v.value">
-                <button class="select_option" @click="checkFlag(v.value)">
-                    <i class="icon_square" :class="{'checked':isFlagChecked(v.value)}"></i>
-                    <em v-text="v.value"></em>
-                    {{v.title}}
-                </button>
-            </li>
-        </ul>
+        <button class="select_button"
+            tabindex="2"
+            v-text="flags"
+            @click.stop="toggleFlagsBox"
+        ></button>
+        <div class="select_options">
+            <button class="select_item"
+                v-for="v in allFlags"
+                :key="v.value"
+                @click.stop="checkFlag(v.value)">
+                <i class="icon icon--checkbox"
+                    :class="{'checked':isFlagChecked(v.value)}"
+                ></i>
+                <em v-text="v.value"></em>
+                {{v.title}}
+            </button>
+        </div>
     </div>
 </div>
 </template>
 
 <script>
 import {BOX_FLAGS} from '../types'
-import {MAX_DELAY, flags as allFlags} from '../config'
+import {THROTTLE_TIME, flags as allFlags} from '../config'
 import throttle from 'lodash-es/throttle'
+
 
 const allFlagsArray = allFlags.map(v => v.value)
 
@@ -33,7 +44,7 @@ export default {
         },
         allFlags () {
             return allFlags
-        },
+        }
     },
     methods: {
         toggleFlagsBox () {
@@ -42,7 +53,7 @@ export default {
         update: throttle(function (event) {
             const value = event.target.value
             this.$emit('update', {name: 'source', value})
-        }, MAX_DELAY),
+        }, THROTTLE_TIME),
         isFlagChecked (flag) {
             const flags = this.flags
             return flags.includes(flag)
@@ -57,7 +68,7 @@ export default {
                 }
             }).join('')
             this.$emit('update', {name: 'flags', value})
-        },
-    },
+        }
+    }
 }
 </script>

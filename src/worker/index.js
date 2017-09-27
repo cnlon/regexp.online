@@ -1,26 +1,17 @@
-import {PARSE, RESIZE, ERROR, READY} from '../types'
-import Regexp from './Regexp'
+const MyWorker = require(
+    process.env.NODE_ENV === 'production'
+        ? 'worker-loader?name=worker.[chunkhash:6].js!./worker.js'
+        : 'worker-loader?name=worker.js!./worker.js'
+)
 
-const regexp = new Regexp({})
-
-/* eslint-disable no-undef */
-onmessage = function (event) {
-    const [method, data] = event.data
-    switch (method) {
-        case PARSE:
-            const result = regexp.parse(data)
-            const {error} = result
-            if (error) {
-                postMessage([ERROR, error])
-            } else {
-                postMessage([PARSE, result])
-            }
-            break
-        case RESIZE:
-            regexp.resize(data)
-            break
+module.exports = function makeWorker (callback) {
+    const worker = new MyWorker()
+    worker.onmessage = function (event) {
+        const [method, data] = event.data
+        callback(method, data)
     }
+    worker.post = function (method, data) {
+        worker.postMessage([method, data])
+    }
+    return worker
 }
-
-postMessage([READY])
-/* eslint-enable no-undef */

@@ -1,22 +1,27 @@
 <template>
 <div class="top">
-    <div class="top-body">
+    <div class="top-body" v-once>
         <h1 class="top-body_title">
-            {{title}}
-            <small>
-                &nbsp;v
-                <a target="_blank" tabindex="-1" :href="sourcePage" v-text="version"></a>
-            </small>
+            <span class="top-body_logo">{{title}}</span>
+            <small class="top-body_version"><a target="_blank"
+                tabindex="-1"
+                :href="sourcePage"
+                v-text="'v' + version"
+            ></a></small>
         </h1>
     </div>
     <div class="top-menu">
-        <button class="top-menu_toggle" tabindex="8" @click="toggleNav" v-text="toggleText"/>
+        <button class="top-menu_toggle"
+            tabindex="8"
+            @click.stop="toggleNav"
+            v-text="toggleText"
+        ></button>
     </div>
 </div>
 </template>
 
 <script>
-import {BOX_NAV} from '../types'
+import {BOX_NAV} from './types'
 
 export default {
     data () {
@@ -29,40 +34,46 @@ export default {
     computed: {
         toggleText () {
             return this.$root.isBox(BOX_NAV) ? '×' : '＝'
-        },
+        }
     },
     methods: {
         toggleNav () {
             this.$root.toggleBox(BOX_NAV)
-        },
-    },
+        }
+    }
 }
 </script>
 
 <style>
-@import "../css/variables.css";
+@import "./css/_variables.css";
+@import "./css/_mixins.css";
+
 
 .top {
     display: table;
     table-layout: fixed;
     width: 100%;
-    height: var(--height-header);
+    height: var(--header-height);
     background-color: var(--color-head-background);
     color: var(--color-head-text);
 }
 .top-body {
     display: table-cell;
-    padding: 0 0 0 16px;
+    padding: 0 0 0 1rem;
     vertical-align: middle;
 }
 .top-body_title {
     margin: 0;
-    font-size: 24px;
+    font-size: 1.25rem;
     white-space: nowrap;
     overflow: hidden;
 }
-.top-body_title small {
-    font-size: var(--font-size-xs);
+.top-body_logo {
+    font-family: "Droid Sans Mono";
+}
+.top-body_version {
+    margin-left: .5em;
+    font-size: .5em;
 }
 .top-body_title a {
     color: inherit;
@@ -72,21 +83,18 @@ export default {
 }
 .top-menu {
     display: table-cell;
-    width: var(--height-header);
+    width: var(--header-height);
 }
 .top-menu_toggle {
+    @apply --no-appearance-button;
+
     display: block;
     width: 100%;
-    height: var(--height-header);
-    padding: 8px 16px;
+    height: var(--header-height);
+    padding: .5rem 1rem;
     box-sizing: border-box;
-    appearance: none;
-    border: none;
-    outline: none;
     background-color: inherit;
-    color: inherit;
-    font-size: 24px;
-    cursor: pointer;
+    font-size: 1.5rem;
 }
 
 @media(--pc) {

@@ -1,0 +1,23 @@
+@import "./_variables.css";
+
+
+.editor {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: .75rem;
+    overflow-y: auto;
+    line-height: 1.4;
+    font-family: "Droid Sans Mono", monospace;
+    font-size: 1.125rem;
+    overflow-wrap: break-word;
+    outline: none;
+    cursor: text;
+    caret-color: black;
+    user-select: text;
+}
+.editor::selection,
+.editor ::selection {
+    color: var(--color-selected-color);
+    background-color: var(--color-selected-background);
+}

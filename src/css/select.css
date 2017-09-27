@@ -1,0 +1,106 @@
+@import "./_variables.css";
+
+
+:root {
+    --select-options-offset: .5rem;
+    --select-box-border: 1px solid color(var(--color-light) blackness(20%));
+}
+
+.select {
+    position: relative;
+    display: table-cell;
+    width: var(--input-box-height);
+}
+
+.select_button {
+    @apply --no-appearance-button;
+
+    width: 100%;
+    height: var(--input-box-height);
+    padding: 0;
+    text-align: center;
+    line-height: var(--input-box-height);
+    font-family: "Droid Sans Mono";
+    background-color: transparent;
+}
+.select_button:empty::before {
+    content: ".";
+    visibility: hidden;
+}
+.select_button:hover,
+.select.show .select_button {
+    background-color: var(--color-light);
+}
+
+.select::before {
+    display: none;
+
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 10;
+    width: .75rem;
+    height: .75rem;
+    margin-top: .125rem;
+    margin-left: -.375rem;
+    transform: rotate(45deg) translateY(1px);
+    transform-origin: center;
+    border-top: var(--select-box-border);
+    border-left: var(--select-box-border);
+    border-radius: 2px;
+    background-color: var(--color-light);
+}
+.select.show::before {
+    display: block;
+}
+
+.select_options {
+    display: none;
+
+    position: absolute;
+    top: 100%;
+    left: var(--input-box-height);
+    transform: translateX(-100%);
+    z-index: 9;
+    flex-flow: column nowrap;
+    margin-top: .5rem;
+    padding: .75rem 0;
+    border: var(--select-box-border);
+    border-radius: 2px;
+    background-color: var(--color-light);
+}
+.select.show .select_options {
+    display: flex;
+}
+
+.select_item {
+    @apply --no-appearance-button;
+
+    width: 100%;
+    box-sizing: border-box;
+    padding: .25rem 1rem .25rem .5rem;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    background-color: transparent;
+}
+.select_item:not(:last-child) {
+    margin-bottom: .25rem;
+}
+.select_item:hover {
+    color: black;
+    background-color: var(--color-gray);
+}
+
+.select_item i,
+.select_item em {
+    margin-right: 4px;
+}
+.select_item em {
+    font-family: "Droid Sans Mono";
+    font-weight: bold;
+    font-style: normal;
+}
+

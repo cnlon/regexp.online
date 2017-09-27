@@ -1,24 +1,28 @@
-import {MODE_LIST, MODE_REPLACE} from './types'
+import {MODE_LIST, MODE_REPLACE, MODE_NONE} from './types'
 import regexps from './regexps.json'
+
 
 export const defaultResolve = {
     [MODE_LIST]: '$&\\n',
     [MODE_REPLACE]: '[$&]',
 }
 
+
 export const defaultRegexp = {
     source: '',
     flags: 'g',
     input: '',
     resolve: defaultResolve[MODE_LIST],
-    mode: MODE_LIST,
+    mode: MODE_NONE,
 }
+
 
 export const demoRegexp = Object.assign(
     {},
     defaultRegexp,
     Object.values(regexps)[0],
 )
+
 
 export const flags = [{
     value: 'g',
@@ -51,6 +55,7 @@ if (check('y')) {
     })
 }
 
+
 export const modes = [{
     value: MODE_LIST,
     title: '列举',
@@ -59,5 +64,5 @@ export const modes = [{
     title: '替换',
 }]
 
-export const MIN_DELAY = 100
-export const MAX_DELAY = 600
+
+export const THROTTLE_TIME = 300

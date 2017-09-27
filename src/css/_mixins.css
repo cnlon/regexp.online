@@ -1,0 +1,15 @@
+:root {
+    --no-appearance: {
+        appearance: none;
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+
+    --no-appearance-button: {
+        @apply --no-appearance;
+        border-radius: 0;
+        cursor: pointer;
+        color: inherit;
+    }
+}

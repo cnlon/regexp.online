@@ -1,0 +1,28 @@
+@import "./_variables.css";
+@import "./_mixins.css";
+
+
+.input-box {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--color-light);
+}
+.input {
+    display: table-cell;
+}
+.input input {
+    @apply --no-appearance;
+
+    width: 100%;
+    height: var(--input-box-height);
+    box-sizing: border-box;
+    padding: .5rem .75rem;
+    color: var(--color-text);
+    caret-color: black;
+}
+.input input::selection {
+    color: var(--color-selected-color);
+    background-color: var(--color-selected-background);
+}

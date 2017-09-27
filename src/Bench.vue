@@ -1,35 +1,55 @@
 <template>
 <main class="bench">
-    <div class="bench-wrap bench-wrap--input">
-        <source-box :class="{'error':sourceIsError}" :source="source" :flags="flags" @update="update"/>
-        <input-editer class="bench-wrap_editer" ref="input" :input="input" @update="update" @resize="resize"/>
+    <div class="bench-box bench-box--input">
+        <source-box class="bench-box_input"
+            :class="{'error':sourceIsError}"
+            :source="source"
+            :flags="flags"
+            @update="update"
+        ></source-box>
+        <input-editor class="bench-box_editor"
+            ref="input"
+            :input="input"
+            @update="update"
+        ></input-editor>
     </div>
-    <div class="bench-wrap bench-wrap--output" v-show="showSolution">
-        <resolve-box class="bench-wrap_bar" :resolve="resolve" :mode="mode" @update="update"/>
-        <output-editer class="bench-wrap_editer" :output="output"/>
+    <div class="bench-box bench-box--output"
+        v-show="showSolution">
+        <resolve-box class="bench-box_input"
+            :resolve="resolve"
+            :mode="mode"
+            @update="update"
+        ></resolve-box>
+        <output-editor class="bench-box_editor"
+            :output="output"
+        ></output-editor>
     </div>
-    <button class="bench_toggle" tabindex="7" @click="toggle" v-text="toggleText"/>
+    <button class="bench_toggle"
+        tabindex="7"
+        v-text="toggleText"
+        @click="toggle"
+    ></button>
 </main>
 </template>
 
 <script>
-import {defaultRegexp, defaultResolve, demoRegexp} from '../config'
-import SourceBox from './Source.vue'
-import InputEditer from './Input.vue'
-import ResolveBox from './Resolve.vue'
-import OutputEditer from './Output.vue'
+import {defaultRegexp, defaultResolve, demoRegexp} from './config'
+import SourceBox from './components/Source.vue'
+import InputEditor from './components/Input.vue'
+import ResolveBox from './components/Resolve.vue'
+import OutputEditor from './components/Output.vue'
 import {
     BOX_NONE,
     MODE_NONE,
     MODE_LIST,
     MODE_REPLACE,
     PARSE,
-    RESIZE,
     ERROR,
     READY,
-} from '../types'
-import makeWorker from '../makeWorker'
-import bus from '../bus'
+} from './types'
+import makeWorker from './worker/'
+import bus from './bus'
+
 
 export default {
     data () {
@@ -37,13 +57,13 @@ export default {
             showSolution: false,
             output: '',
             ...defaultRegexp,
-            sourceIsError: false,
+            sourceIsError: false
         }
     },
     computed: {
         toggleText () {
             return this.showSolution ? '－' : '＋'
-        },
+        }
     },
     mounted () {
         this.worker = makeWorker((method, data) => {
@@ -55,6 +75,7 @@ export default {
                     break
                 case ERROR:
                     this.sourceIsError = true
+                    this.$refs.input.clear()
                     break
                 case READY:
                     this.setRegexp(demoRegexp)
@@ -88,7 +109,10 @@ export default {
             } else if (!this.resolve && !this.input) {
                 this.showSolution = false
             }
-            this.post()
+            this.$nextTick(() => {
+                this.$refs.input.resize()
+                this.post()
+            })
         },
         update ({name, value}) {
             this[name] = value
@@ -102,15 +126,16 @@ export default {
             this.post()
         },
         post () {
-            if (!this.source) {
+            const {source, input} = this
+            if (!source || !input || input === '\n') {
                 const inputChild = this.$refs.input
                 inputChild.paint(null)
                 return
             }
             const data = {
-                source: this.source,
+                source: source,
                 flags: this.flags,
-                input: this.input,
+                input: input,
             }
             if (this.showSolution) {
                 data.resolve = this.resolve
@@ -120,11 +145,8 @@ export default {
             }
             this.worker.post(PARSE, data)
         },
-        resize (options) {
-            this.worker.post(RESIZE, options)
-            this.post()
-        },
         toggle () {
+            this.$refs.input.clear()
             if (this.showSolution) {
                 this.showSolution = false
             } else {
@@ -137,86 +159,96 @@ export default {
                 } else if (!this.resolve || this.resolve === defaultResolve[MODE_LIST]) {
                     this.resolve = defaultResolve[MODE_REPLACE]
                 }
-                this.post()
             }
             this.$root.toggleBox(BOX_NONE)
+            this.$nextTick(() => {
+                this.post()
+                this.$refs.input.resize()
+            })
         },
     },
     components: {
         SourceBox,
-        InputEditer,
+        InputEditor,
         ResolveBox,
-        OutputEditer,
+        OutputEditor,
     },
 }
 </script>
 
 <style>
-@import "../css/variables.css";
+@import "./css/_variables.css";
+@import "./css/_mixins.css";
+
 
 .bench {
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-flow: column nowrap;
     padding: 8px;
-    color: var(--color-text);
 }
-.bench-wrap {
+
+.bench-box {
+    flex: 1 1 auto;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
     background-color: white;
 }
-.bench-wrap--output {
+
+.bench-box--output {
     margin-top: 12px;
 }
 
-.bench-wrap--input .bench-wrap_editer {
-    height: 50vh;
-    min-height: 240px;
+.bench-box_input {
+    flex: none;
 }
-.bench-wrap--output .bench-wrap_editer {
-    min-height: 100px;
+
+.bench-box_editor {
+    flex: 1 1 auto;
+    height: 100%;
 }
+
 .bench_toggle {
-    float: right;
+    @apply --no-appearance-button;
+
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
     width: 32px;
     height: 32px;
     padding: 0;
-    appearance: none;
-    border: none;
-    outline: none;
     line-height: 32px;
     text-align: center;
     vertical-align: middle;
     font-size: 20px;
     background-color: transparent;
-    color: inherit;
+    opacity: .3;
+    transition: opacity .15s;
 }
 .bench_toggle:hover {
-    background-color: var(--color-panel-background);
     color: var(--color-panel-text);
+    background-color: var(--color-panel-background);
+    opacity: 1;
+}
+
+.bench [tabindex]:not(button):focus {
+    box-shadow: 0 0 8px color(var(--color-text) alpha(-80%));
+    transition: box-shadow .15s;
+}
+.bench-box>.error {
+    outline: 1px solid color(var(--color-red) alpha(-50%));;
+    transition: outline-color .15s;
 }
 
 @media(--pc) {
     .bench {
-        position: fixed;
-        top: var(--height-header);
-        right: 0;
-        bottom: 0;
-        left: var(--width-aside);
-        display: flex;
-        flex-flow: column nowrap;
+        left: var(--aside-width);
         padding: 16px;
-    }
-    .bench-wrap {
-        flex: 1 1 auto;
-        display: flex;
-        flex-flow: column nowrap;
-        height: 100%;
-    }
-    .bench-wrap_editer {
-        flex: 1 1 auto;
-        height: 100%;
-    }
-    .bench_toggle {
-        position: fixed;
-        right: 16px;
-        bottom: 16px;
     }
 }
 </style>

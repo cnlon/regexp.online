@@ -3,7 +3,6 @@ export const MODE_LIST = 'l'
 export const MODE_REPLACE = 'r'
 
 export const PARSE = 'P'
-export const RESIZE = 'S'
 export const ERROR = 'E'
 export const READY = 'R'
 

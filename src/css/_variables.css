@@ -1,0 +1,27 @@
+:root {
+    --color-red: #e12;
+    --color-blue: #aef;
+    --color-pale: #f3f3f3;
+    --color-light: #ddd;
+    --color-gray: #999;
+    --color-dark: #333;
+
+    --color-text: var(--color-dark);
+    --color-background: var(--color-pale);
+
+    --color-selected-color: black;
+    --color-selected-background: #60c3;
+
+    --color-head-text: white;
+    --color-head-background: #2b3238;
+
+    --color-panel-text: var(--color-pale);
+    --color-panel-background: #333b42;
+
+    --header-height: 3rem;
+    --aside-width: 240px;
+    --input-box-height: 3rem;
+}
+
+
+@custom-media --pc (min-width: 720px);
