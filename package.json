@@ -1,6 +1,6 @@
 {
   "name": "regexp.online",
-  "version": "0.2.1-alpha",
+  "version": "0.3.0",
   "description": "RegExp.online 是一个学习、测试正则表达式的工具",
   "main": "src/index.js",
   "scripts": {
