@@ -1,7 +1,11 @@
 .DS_Store
 
+.vscode/
+jsconfig.json
+
 node_modules/
 npm-debug.log
 
 Makefile
+
 dist/
