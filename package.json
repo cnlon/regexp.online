@@ -1,0 +1,23 @@
+{
+  "name": "fluor-editor",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .js ."
+  },
+  "dependencies": {
+    "lodash-es": "4.17"
+  },
+  "author": "lon (https://lon.im)",
+  "license": "MIT",
+  "homepage": "https://github.com/cnlon/fluor-editor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnlon/fluor-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cnlon/fluor-editor/issues"
+  }
+}

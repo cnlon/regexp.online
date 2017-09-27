@@ -1,0 +1,26 @@
+.fluor-editor,
+.fluor-editor_editor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.fluor-editor {
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: normal;
+}
+.fluor-editor_editor {
+    outline: none;
+    cursor: text;
+}
+.fluor-editor_canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
