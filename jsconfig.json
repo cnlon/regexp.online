@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
-    "module": "es6"
-  }
+    "compilerOptions": {
+        "module": "es6"
+    }
 }

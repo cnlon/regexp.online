@@ -1,37 +1,39 @@
 {
-  "root": true,
-  "parser": "babel-eslint",
-  "extends": "standard",
-  "plugins": ["html"],
-  "env": {
-      "browser": true
-  },
-  "rules": {
-      "comma-dangle": [
-          "error",
-          "only-multiline"
-      ],
-      "indent": [
-          "error",
-          4,
-          {
-              "SwitchCase": 1
-          }
-      ],
-      "no-multiple-empty-lines": [
-          "error",
-          {
-              "max": 2
-          }
-      ],
-      "operator-linebreak": [
-          "error",
-          "before",
-          {
-              "overrides": {
-                  "=": "after"
-              }
-          }
-      ]
-  }
+    "root": true,
+    "parser": "babel-eslint",
+    "extends": "standard",
+    "plugins": [
+        "html"
+    ],
+    "env": {
+        "browser": true
+    },
+    "rules": {
+        "comma-dangle": [
+            "error",
+            "only-multiline"
+        ],
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 2
+            }
+        ],
+        "operator-linebreak": [
+            "error",
+            "before",
+            {
+                "overrides": {
+                    "=": "after"
+                }
+            }
+        ]
+    }
 }
