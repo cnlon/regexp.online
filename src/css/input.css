@@ -19,6 +19,7 @@
     height: var(--input-box-height);
     box-sizing: border-box;
     padding: .5rem .75rem;
+    font-family: "Droid Sans Mono", monospace;
     color: var(--color-text);
     caret-color: black;
 }
