@@ -1,6 +1,6 @@
 const MyWorker = require(
     process.env.NODE_ENV === 'production'
-        ? 'worker-loader?name=worker.[chunkhash:6].js!./worker.js'
+        ? 'worker-loader?name=worker.[chunkhash:6].js&inline!./worker.js'
         : 'worker-loader?name=worker.js!./worker.js'
 )
 
