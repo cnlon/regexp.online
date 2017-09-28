@@ -7,6 +7,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development'
 
 const isDebug = NODE_ENV !== 'production'
 
+const PUBLIC_PATH = process.env.PUBLIC_PATH || '/'
 const TITLE = process.env.npm_package_keywords_0
 const DESCRIPTION = process.env.npm_package_description
 const KEYWORDS = []
@@ -46,6 +47,7 @@ module.exports = merge(
                     collapseWhitespace: true
                 },
                 cache: isDebug,
+                PUBLIC_PATH,
                 TITLE,
                 DESCRIPTION,
                 KEYWORDS: KEYWORDS.join(', '),
