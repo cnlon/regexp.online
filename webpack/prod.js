@@ -55,6 +55,11 @@ module.exports = {
         }],
     },
     plugins: [
+        new webpack.optimize.CommonsChunkPlugin({
+            name: ['vendor', 'manifest'],
+            minChunks: Infinity
+        }),
+        new webpack.HashedModuleIdsPlugin(),
         new ExtractTextPlugin('[name].[contenthash:6].css'),
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true,
