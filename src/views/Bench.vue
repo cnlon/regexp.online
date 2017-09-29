@@ -33,11 +33,11 @@
 </template>
 
 <script>
-import {defaultRegexp, defaultResolve, demoRegexp} from './config'
-import SourceBox from './components/Source.vue'
-import InputEditor from './components/Input.vue'
-import ResolveBox from './components/Resolve.vue'
-import OutputEditor from './components/Output.vue'
+import {defaultRegexp, defaultResolve, demoRegexp} from '../config'
+import SourceBox from '../components/Source.vue'
+import InputEditor from '../components/Input.vue'
+import ResolveBox from '../components/Resolve.vue'
+import OutputEditor from '../components/Output.vue'
 import {
     BOX_NONE,
     MODE_NONE,
@@ -46,9 +46,9 @@ import {
     PARSE,
     ERROR,
     READY,
-} from './types'
-import makeWorker from './worker/'
-import bus from './bus'
+} from '../types'
+import makeWorker from '../worker/'
+import bus from '../bus'
 
 
 export default {
@@ -177,8 +177,8 @@ export default {
 </script>
 
 <style>
-@import "./css/_variables.css";
-@import "./css/_mixins.css";
+@import "../css/_variables.css";
+@import "../css/_mixins.css";
 
 
 .bench {

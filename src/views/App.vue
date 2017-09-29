@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import {BOX_NONE, BOX_NAV} from './types'
+import {BOX_NONE, BOX_NAV} from '../types'
 import Top from './Top.vue'
 import Refer from './Refer.vue'
 import Bench from './Bench.vue'
@@ -48,8 +48,8 @@ export default {
 </script>
 
 <style>
-@import "./css/_variables.css";
-@import "./css/_mixins.css";
+@import "../css/_variables.css";
+@import "../css/_mixins.css";
 
 
 #app {

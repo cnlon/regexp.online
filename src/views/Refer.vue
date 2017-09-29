@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import {BOX_NONE} from './types'
-import regexps from './regexps'
-import bus from './bus.js'
+import {BOX_NONE} from '../types'
+import regexps from '../regexps'
+import bus from '../bus.js'
 
 
 export default {
@@ -36,8 +36,8 @@ export default {
 </script>
 
 <style>
-@import "./css/_variables.css";
-@import "./css/_mixins.css";
+@import "../css/_variables.css";
+@import "../css/_mixins.css";
 
 
 .refer {

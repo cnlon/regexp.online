@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import {BOX_NAV} from './types'
+import {BOX_NAV} from '../types'
 
 export default {
     data () {
@@ -45,8 +45,8 @@ export default {
 </script>
 
 <style>
-@import "./css/_variables.css";
-@import "./css/_mixins.css";
+@import "../css/_variables.css";
+@import "../css/_mixins.css";
 
 
 .top {
