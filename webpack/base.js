@@ -19,6 +19,9 @@ module.exports = {
             include: [
                 path.resolve(__dirname, '../src'),
                 path.resolve(__dirname, '../editor')
+            ],
+            exclude: [
+                path.resolve(__dirname, '../src/worker/worker.js')
             ]
         }, {
             test: /\.json$/,

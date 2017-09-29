@@ -38,6 +38,21 @@ module.exports = {
                     'postcss-loader'
                 ]
             }),
+        }, {
+            test: /\.js$/,
+            use: [
+                {
+                    loader: 'worker-loader',
+                    options: {
+                        name: '[name].[chunkhash:6].js',
+                        inline: true
+                    }
+                },
+                'babel-loader',
+            ],
+            include: [
+                path.resolve(__dirname, '../src/worker/worker.js')
+            ]
         }],
     },
     plugins: [

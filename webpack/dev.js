@@ -26,6 +26,20 @@ module.exports = {
                 },
                 'postcss-loader'
             ]
+        }, {
+            test: /\.js$/,
+            use: [
+                {
+                    loader: 'worker-loader',
+                    options: {
+                        name: '[name].js'
+                    }
+                },
+                'babel-loader'
+            ],
+            include: [
+                path.resolve(__dirname, '../src/worker/worker.js')
+            ]
         }]
     },
     plugins: [

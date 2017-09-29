@@ -1,5 +1,6 @@
 import {MODE_LIST} from '../types'
 
+
 function escapeLinebreak (str) {
     return str.replace(LINEBREAK_RE, LINEBREAK)
 }

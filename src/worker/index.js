@@ -1,10 +1,7 @@
-const MyWorker = require(
-    process.env.NODE_ENV === 'production'
-        ? 'worker-loader?name=worker.[chunkhash:6].js&inline!./worker.js'
-        : 'worker-loader?name=worker.js!./worker.js'
-)
+import MyWorker from './worker'
 
-module.exports = function makeWorker (callback) {
+
+export default function makeWorker (callback) {
     const worker = new MyWorker()
     worker.onmessage = function (event) {
         const [method, data] = event.data
