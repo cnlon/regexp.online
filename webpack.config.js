@@ -26,7 +26,7 @@ const CREATE_AT = '2016-10-21T01:30:00+0800'
 const UPDATE_AT = process.env.PUBLISH_DATE || new Date().toISOString()
 
 
-module.exports = merge(
+const config = merge(
     require('./webpack/base'),
     isDebug ? require('./webpack/dev') : require('./webpack/prod'), {
         plugins: [
@@ -62,3 +62,10 @@ module.exports = merge(
         ]
     }
 )
+
+if (process.env.ANALYZE) {
+    const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+    config.plugins.unshift(new BundleAnalyzerPlugin({analyzerMode: 'static'}))
+}
+
+module.exports = config
