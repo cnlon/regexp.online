@@ -2,14 +2,15 @@ const path = require('path')
 
 module.exports = {
     entry: {
+        vendor: [
+            'vue',
+            'lodash-es/throttle',
+        ],
+        shim: 'core-js/shim',
         app: [
             './src/index.js',
             'normalize.css',
             './src/css/index.css',
-        ],
-        vendor: [
-            'core-js/shim',
-            'vue',
         ],
     },
     module: {
