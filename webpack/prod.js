@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const WebpackMd5Hash = require('webpack-md5-hash')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const PUBLIC_PATH = process.env.PUBLIC_PATH || '/'
@@ -56,7 +55,6 @@ module.exports = {
         }],
     },
     plugins: [
-        new WebpackMd5Hash(),
         new ExtractTextPlugin('[name].[contenthash:6].css'),
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true,
