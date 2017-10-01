@@ -78,11 +78,30 @@ export default {
                     this.$refs.input.clear()
                     break
                 case READY:
-                    this.setRegexp(demoRegexp)
+                    const lastState = {
+                        source: localStorage.getItem('source'),
+                        flags: localStorage.getItem('flags'),
+                        input: localStorage.getItem('input'),
+                        resolve: localStorage.getItem('resolve'),
+                        mode: localStorage.getItem('mode')
+                    }
+                    const isLastStateValid = Object.values(lastState).some(Boolean)
+                    const defaultState = isLastStateValid ? lastState : demoRegexp
+                    this.setRegexp(defaultState)
+                    const showSolution = localStorage.getItem('showSolution')
+                    this.showSolution = showSolution === 'true'
                     break
             }
         })
         bus.$on('setRegexp', this.setRegexp)
+        window.addEventListener('unload', () => {
+            localStorage.setItem('source', this.source)
+            localStorage.setItem('flags', this.flags)
+            localStorage.setItem('input', this.input)
+            localStorage.setItem('resolve', this.resolve)
+            localStorage.setItem('mode', this.mode)
+            localStorage.setItem('showSolution', String(this.showSolution))
+        })
     },
     beforeDestroy () {
         this.worker.terminate()
