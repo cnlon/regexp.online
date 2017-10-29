@@ -1,5 +1,5 @@
 {
-    "website": {
+    "url": {
         "source": "[a-zA-z]+:\\/\\/[^\\s]*",
         "flags": "gi",
         "input": "https://github.com/cnlon/regexp.online\nzhangsan@gmail.com\n32132119990909123x\n200000\n192.168.0.1",
@@ -23,7 +23,7 @@
         "input": "https://github.com/cnlon/regexp.online\nzhangsan@gmail.com\n32132119990909123x\n200000\n192.168.0.1",
         "title": "邮编"
     },
-    "ipv4": {
+    "ip": {
         "source": "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)",
         "flags": "g",
         "input": "https://github.com/cnlon/regexp.online\nzhangsan@gmail.com\n32132119990909123x\n200000\n192.168.0.1",
