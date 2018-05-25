@@ -1,131 +1,64 @@
-import debounce from 'lodash-es/debounce.js'
-
-
-/**
- * @typedef {number} x
- * @typedef {number} y
- * @typedef {number} width
- * @typedef {number} height
- * @typedef {[x, y, width, height]} Rect
- * @typedef {number} offset
- * @typedef {Node} ParaNode
- * @typedef {number} paraNumber
- * @typedef {[offset, offset, ParaNode, paraNumber]} Range
- * @typedef {Rect[]} RectList
- * @typedef {Range[]} RangeList
- */
-
-/** @const {string} HIGHLIGHT_COLOR */
+import getClientRects from './getClientRects.js'
+import createParaNode from './createParaNode.js'
+import Range from './Range.js'
+import Point from './Point.js'
+import Rect from './Rect.js'
 
 const HIGHLIGHT_COLOR = 'skyblue'
 
 const WRAPPER_CLASS = 'fluor-editor'
 const EDITOR_CLASS = 'fluor-editor_editor'
 const CANVAS_CLASS = 'fluor-editor_canvas'
+const LINEBREAK_CLASS = 'fluor-editor_editor--linebreak'
+const LINE_FEED = /\r\n|\n/
 
-/** @const {Range} range */
-
-const range = document.createRange()
-
-/**
- * @param {Node} startNode
- * @param {offset} startOffset
- * @param {Node} stopNode
- * @param {offset} stopOffset
- * @return {ClientRectList}
- */
-
-function getClientRects (startNode, startOffset, stopNode, stopOffset) {
-    range.setStart(startNode, startOffset)
-    range.setEnd(stopNode, stopOffset)
-    const clientRectList = range.getClientRects()
-    range.detach()
-    return clientRectList
-}
+const rangeRectsCacheMap = new WeakMap()
 
 class Editor {
     /**
-     * @param {string} text
-     * @return {ParaNode}
-     */
-
-    static createParaNode (text) {
-        const paraNode = document.createElement('div')
-        if (text) {
-            paraNode.textContent = text
-        } else {
-            const br = document.createElement('br')
-            paraNode.appendChild(br)
-        }
-        return paraNode
-    }
-
-    /**
      * @param {string|HTMLElement} selector
      * @param {object} [config = {}]
-     * @property {number} [config.color = HIGHLIGHT_COLOR]
+     * @property {string} [config.color = HIGHLIGHT_COLOR]
+     * @property {boolean} [config.linebreak = true]
+     * @property {boolean} [config.windowAutoResize = true]
+     * @property {boolean} [config.windowAutoScroll = true]
      */
 
-    constructor (selector, {color = HIGHLIGHT_COLOR} = {}) {
-        /** @type {any} */
+    constructor (selector, {
+        color = HIGHLIGHT_COLOR,
+        linebreak = true,
+        windowAutoResize = true,
+        windowAutoScroll = true,
+    } = {}) {
+        this.config = {
+            color,
+            linebreak,
+            windowAutoResize,
+            windowAutoScroll,
+        }
+
         const root = typeof selector === 'string'
             ? document.querySelector(selector)
             : selector
-        this._create(root)
-
-        this.ctx = this.canvas.getContext('2d')
-        this.config = {color}
-        this.rect = [0, 0, 0, 0]
-        this._paintedParaRanges = null
-        this._paintedParaRects = null
-
-        this._listen()
-        this.resize()
-    }
-
-    get content () {
-        return this.editor.innerText
-    }
-    set content (value) {
-        const {content, editor} = this
-        if (value === content) {
-            return
-        }
-        editor.innerHTML = ''
-        const paraContentList = String(value).split('\n')
-        for (const text of paraContentList) {
-            const paraNode = Editor.createParaNode(text)
-            editor.appendChild(paraNode)
-        }
-    }
-
-    get _paraNodes () {
-        return this.editor.childNodes
-    }
-
-    /**
-     * @param {HTMLElement} root
-     */
-
-    _create (root) {
         root.classList.add(WRAPPER_CLASS)
 
-        const canvas = document.createElement('canvas')
-        this.canvas = canvas
-        canvas.classList.add(CANVAS_CLASS)
+        this.canvas = document.createElement('canvas')
+        this.canvas.classList.add(CANVAS_CLASS)
 
-        const editor = document.createElement('div')
-        this.editor = editor
-        editor.classList.add(EDITOR_CLASS)
-        editor.contentEditable = 'true'
-        this.content = root.textContent
+        this.editor = document.createElement('div')
+        this.editor.classList.add(EDITOR_CLASS)
+        if (linebreak) {
+            this.editor.classList.add(LINEBREAK_CLASS)
+        }
+        this.editor.contentEditable = 'true'
+        this.content = root.innerText
         const {
             paddingTop,
             paddingRight,
             paddingBottom,
             paddingLeft,
         } = window.getComputedStyle(root)
-        Object.assign(editor.style, {
+        Object.assign(this.editor.style, {
             paddingTop,
             paddingRight,
             paddingBottom,
@@ -137,36 +70,64 @@ class Editor {
             padding: '0px',
             overflow: 'initial'
         })
-        root.appendChild(canvas)
-        root.appendChild(editor)
+        root.appendChild(this.canvas)
+        root.appendChild(this.editor)
+
+        this.context = this.canvas.getContext('2d')
+        this.scrollOrigin = new Point(0, 0)
+        this.paintedRanges = null
+        this.paintedRects = null
+
+        this._addListeners()
+        this.resize()
     }
 
-    _listen () {
-        /** @type {any} */
-        this._repaint = debounce(() => {
-            if (this._paintedParaRanges) {
-                this._paintedParaRects = this._drawRanges(this._paintedParaRanges)
-            }
-        }, 200)
-        this._resizeListener = () => {
-            this.resize()
-            this._repaint()
-        }
-        window.addEventListener('resize', this._resizeListener)
+    destroy () {
+        this._removeListeners()
+        this.paintedRects = null
+        this.paintedRanges = null
+        this.scrollOrigin = null
+        this.context = null
+        this.canvas = null
+        this.editor = null
+        this.config = null
+    }
 
-        this._scrollListener = event => {
-            this.rect[0] -= window.scrollX
-            this.rect[1] -= window.scrollY
+    get content () {
+        return this.editor.innerText
+    }
+    set content (value) {
+        const {content, editor} = this
+        if (value === content) {
+            return
         }
-        window.addEventListener('scroll', this._scrollListener)
-
-        this._editorScrollListener = event => {
-            if (!this._paintedParaRects) {
-                return
+        const paraNodes = this.editor.childNodes
+        const paraContents = String(value).split(LINE_FEED)
+        const l = paraContents.length
+        if (l < paraNodes.length) {
+            const lastNode = paraNodes.item(l - 1)
+            let nextSiblingNode
+            while ((nextSiblingNode = lastNode.nextSibling)) {
+                editor.removeChild(nextSiblingNode)
             }
-            this.refresh()
-            this._drawRects(this._paintedParaRects)
         }
+        for (let i = 0, paraNode, text; i < l; i++) {
+            paraNode = paraNodes.item(i)
+            text = paraContents[i]
+            if (paraNode) {
+                if (paraNode.innerText === text) {
+                    continue
+                }
+                paraNode.innerText = text
+                continue
+            }
+            paraNode = createParaNode(text)
+            editor.appendChild(paraNode)
+        }
+    }
+
+    _addListeners () {
+        this._editorScrollListener = () => this.redrawRects()
         this.editor.addEventListener('scroll', this._editorScrollListener)
 
         this._editorPasteListener = event => {
@@ -176,60 +137,54 @@ class Editor {
         }
         this.editor.addEventListener('paste', this._editorPasteListener)
 
-        const paraContentObserverConfig = {
-            subtree: true,
-            characterData: true
-        }
-        const paraContentSubscriber = mutations => {
-            let paraNode
-            for (const {type, target} of mutations) {
-                paraNode = target.parentElement
-                if (type !== 'characterData' || !paraNode) {
+        this._paraContentObserver = new MutationObserver(mutations => {
+            for (let i = 0, l = mutations.length, mutation, type, paraNode; i < l; i++) {
+                mutation = mutations[i]
+                type = mutation.type
+                if (type !== 'characterData') {
                     continue
                 }
-                paraNode['_dirty'] = true
+                paraNode = mutation.target.parentElement
+                if (!paraNode) {
+                    continue
+                }
+                rangeRectsCacheMap.delete(paraNode)
             }
-        }
-        this._paraContentObserver = new MutationObserver(paraContentSubscriber)
-        this._paraContentObserver.observe(this.editor, paraContentObserverConfig)
+        })
+        this._paraContentObserver.observe(this.editor, {
+            characterData: true,
+            subtree: true,
+        })
 
-        const paraNodesObserverConfig = {
-            childList: true
+        if (this.config.windowAutoResize) {
+            this._windowResizeListener = () => this.resize()
+            window.addEventListener('resize', this._windowResizeListener)
         }
-        const paraNodesSubscriber = mutations => {
-            const mutation = mutations[mutations.length - 1]
-            if (mutation.type !== 'childList') {
-                return
+        if (this.config.windowAutoScroll) {
+            this._windowScrollListener = () => {
+                const {pageXOffset, pageYOffset} = window
+                this.scrollOrigin.move(pageXOffset, pageYOffset)
             }
-            let paraNode
-            if (mutation.addedNodes.length !== 0) {
-                paraNode = mutation.previousSibling
-            } else if (mutation.removedNodes.length !== 0) {
-                paraNode = mutation.nextSibling
-            } else {
-                return
-            }
-            while (paraNode) {
-                paraNode['_dirty'] = true
-                paraNode = paraNode.nextSibling
-            }
+            window.addEventListener('scroll', this._windowScrollListener)
         }
-        this._paraNodesObserver = new MutationObserver(paraNodesSubscriber)
-        this._paraNodesObserver.observe(this.editor, paraNodesObserverConfig)
     }
 
-    _unlisten () {
-        window.removeEventListener('resize', this._resizeListener)
-        this._resizeListener = null
-        this._repaint.cancel()
-        window.removeEventListener('scroll', this._scrollListener)
-        this._scrollListener = null
+    _removeListeners () {
         this.editor.removeEventListener('scroll', this._editorScrollListener)
         this._editorScrollListener = null
         this.editor.removeEventListener('paste', this._editorPasteListener)
         this._editorPasteListener = null
         this._paraContentObserver.disconnect()
         this._paraContentObserver = null
+
+        if (this._windowResizeListener) {
+            window.removeEventListener('resize', this._windowResizeListener)
+            this._windowResizeListener = null
+        }
+        if (this._windowScrollListener) {
+            window.removeEventListener('scroll', this._windowScrollListener)
+            this._windowScrollListener = null
+        }
     }
 
     resize () {
@@ -242,137 +197,57 @@ class Editor {
         }
         canvas.width = width
         canvas.height = height
-        const {ctx, config: {color}, rect} = this
-        ctx.fillStyle = color
-        rect[0] = left
-        rect[1] = top
-        rect[2] = width
-        rect[3] = height
-        const paraNodes = this._paraNodes
-        for (const paraNode of paraNodes) {
-            paraNode['_dirty'] = true
+        const {context, config: {color}, scrollOrigin} = this
+        context.fillStyle = color
+        scrollOrigin.moveTo(left, top)
+        const paraNodes = this.editor.childNodes
+        for (let i = 0, l = paraNodes.length, paraNode; i < l; i++) {
+            paraNode = paraNodes[i]
+            rangeRectsCacheMap.delete(paraNode)
         }
+        this.redrawRanges()
     }
 
-    destroy () {
-        this._unlisten()
-        this._paintedParaRects = null
-        this._paintedParaRanges = null
-        this.rect = null
-        this.config = null
-        this.ctx = null
-        this.canvas = null
-        this.editor = null
-    }
-
-    /**
-     * Convert clientRect to editoRect
-     * @param {Rect} clientRect
-     * @return {Rect}
-     */
-
-    rectClientToEditor (clientRect) {
-        const [clientLeft, clientTop] = clientRect
-        const [originLeft, originTop] = this.rect
-        return [
-            clientLeft - originLeft,
-            clientTop - originTop,
-            clientRect[2],
-            clientRect[3]
-        ]
-    }
-
-    /**
-     * Convert editorRect to canvasRect
-     * @param {Rect} editorRect
-     * @return {Rect}
-     */
-
-    rectEditorToCanvas (editorRect) {
-        const [editorLeft, editorTop] = editorRect
-        const {scrollLeft, scrollTop} = this.editor
-        return [
-            editorLeft - scrollLeft,
-            editorTop - scrollTop,
-            editorRect[2],
-            editorRect[3]
-        ]
-    }
-
-    /**
-     * Convert clientRect to canvasRect
-     * @param {Rect} editorRect
-     * @return {Rect}
-     */
-
-    rectClientToCanvas (clientRect) {
-        const [clientLeft, clientTop] = clientRect
-        const [originLeft, originTop] = this.rect
-        const {scrollTop, scrollLeft} = this.editor
-        return [
-            clientLeft - originLeft - scrollLeft,
-            clientTop - originTop - scrollTop,
-            clientRect[2],
-            clientRect[3]
-        ]
-    }
-
-    /**
-     * @param {ParaNode} paraNode
-     * @param {offset} startOffset
-     * @param {offset} stopOffset
-     * @return {RectList}
-     */
-
-    _getParaRects (paraNode, startOffset, stopOffset) {
-        const key = `${startOffset}:${stopOffset}`
-        if (paraNode['_dirty'] || !paraNode['_cache']) {
-            paraNode['_dirty'] = false
-            paraNode['_cache'] = {}
+    _getRangeRects (start, stop, paraNode) {
+        const key = `${start}:${stop}`
+        if (!rangeRectsCacheMap.has(paraNode)) {
+            rangeRectsCacheMap.set(paraNode, Object.create(null))
         }
-        const caches = paraNode['_cache']
-        if (caches[key]) {
-            return caches[key]
+        const cache = rangeRectsCacheMap.get(paraNode)
+        if (cache[key]) {
+            return cache[key]
         }
         const textNode = paraNode.firstChild
         const clientRectList = getClientRects(
             textNode,
-            startOffset,
+            start,
             textNode,
-            stopOffset
+            stop
         )
         const {scrollLeft, scrollTop} = this.editor
-        /** @type {RectList} */
         const rectList = []
         for (let i = 0, l = clientRectList.length, clientRect; i < l; i++) {
             clientRect = clientRectList.item(i)
-            rectList.push([
-                clientRect.left + scrollLeft,
-                clientRect.top + scrollTop,
+            rectList.push(new Rect(
+                clientRect.left + scrollLeft - this.scrollOrigin.x,
+                clientRect.top + scrollTop - this.scrollOrigin.y,
                 clientRect.width,
                 clientRect.height
-            ])
+            ))
         }
-        caches[key] = rectList
+        cache[key] = rectList
         return rectList
     }
 
-    /**
-     * @param {offset} start
-     * @param {offset} stop
-     * @return {RangeList}
-     */
-
     _getParaRanges (start, stop) {
-        /** @type {RangeList} */
         const rangeList = []
-        const paraNodes = this._paraNodes
+        const paraNodes = this.editor.childNodes
         let paraOffset = start
         let begined = false
         let paraNode, paraLength, startOffset
         for (let i = 0, l = paraNodes.length; i < l && paraOffset >= 0; (i++, paraOffset--)) {
             paraNode = paraNodes[i]
-            paraLength = paraNode.textContent.length
+            paraLength = paraNode.innerText.length
             if (begined === false) {
                 if (paraOffset >= paraLength) {
                     paraOffset -= paraLength
@@ -383,119 +258,112 @@ class Editor {
                 if (typeof stop === 'number') {
                     paraOffset += stop - start
                     if (paraOffset >= paraLength) {
-                        rangeList.push([startOffset, paraLength, paraNode, i])
+                        rangeList.push(new Range(
+                            startOffset,
+                            paraLength,
+                            paraNode,
+                            i
+                        ))
                         paraOffset -= paraLength
                         continue
                     }
                 } else {
                     paraOffset = undefined
                 }
-                rangeList.push([startOffset, paraOffset, paraNode, i])
+                rangeList.push(new Range(
+                    startOffset,
+                    paraOffset,
+                    paraNode,
+                    i
+                ))
                 break
             } else {
                 startOffset = 0
                 if (paraOffset >= paraLength) {
-                    rangeList.push([startOffset, paraLength, paraNode, i])
+                    rangeList.push(new Range(
+                        startOffset,
+                        paraLength,
+                        paraNode,
+                        i
+                    ))
                     paraOffset -= paraLength
                     paraOffset -= 1
                     continue
                 }
-                rangeList.push([startOffset, paraOffset, paraNode, i])
+                rangeList.push(new Range(
+                    startOffset,
+                    paraOffset,
+                    paraNode,
+                    i
+                ))
                 break
             }
         }
         return rangeList
     }
 
-    refresh () {
-        this.canvas.width = this.canvas.width
-        this.ctx.fillStyle = this.config.color
-    }
-
     clear () {
-        const {canvas} = this
-        const newRect = canvas.getBoundingClientRect()
-        const {width, height, top, left} = newRect
-        canvas.width = width
-        canvas.height = height
-        const {ctx, config: {color}, rect} = this
-        ctx.fillStyle = color
-        rect[0] = left
-        rect[1] = top
-        rect[2] = width
-        rect[3] = height
-        const paraNodes = this._paraNodes
-        for (const paraNode of paraNodes) {
-            paraNode['_dirty'] = false
-            paraNode['_cache'] = {}
-        }
-        this._paintedParaRects = null
-        this._paintedParaRanges = null
+        this.canvas.width = this.canvas.width
+        this.context.fillStyle = this.config.color
     }
 
-    _draw (canvasRect) {
-        this.ctx.fillRect(
-            canvasRect[0] + 1,
-            canvasRect[1],
-            canvasRect[2] - 1,
-            canvasRect[3]
+    drawRect (rect) {
+        const {scrollLeft, scrollTop} = this.editor
+        this.context.fillRect(
+            rect.x - scrollLeft + 1,
+            rect.y - scrollTop,
+            rect.w - 1,
+            rect.h
         )
     }
 
-    /**
-     * @param {RectList} paraRectList
-     */
-
-    _drawRects (paraRectList) {
-        let rect, canvasRect
-        for (rect of paraRectList) {
-            canvasRect = this.rectEditorToCanvas(rect)
-            this._draw(canvasRect)
-        }
-    }
-
-    /**
-     * @param {RangeList} paraRangeList
-     * @return {RectList}
-     */
-
-    _drawRanges (paraRangeList) {
-        const rangeRects = []
-        let rects, editorRect, canvasRect
-        for (const [startOffset, stopOffset, paraNode] of paraRangeList) {
-            rects = this._getParaRects(
-                paraNode,
-                startOffset,
-                stopOffset === undefined ? startOffset + 1 : stopOffset
-            )
-            for (const [left, top, width, height] of rects) {
-                editorRect = this.rectClientToEditor([left, top, width, height])
-                rangeRects.push(editorRect)
-                canvasRect = this.rectEditorToCanvas(editorRect)
-                this._draw(canvasRect)
-            }
-        }
-        return rangeRects
-    }
-
-    /**
-     * @param {...offset} args
-     */
-
     draw (...args) {
-        this.refresh()
-        this._paintedParaRanges = []
-        this._paintedParaRects = []
+        this.clear()
+        this.paintedRanges = []
+        this.paintedRects = []
         const l = args.length
         let i = 0
-        let start, stop, ranges, rects
+        let ranges
         while (i < l) {
-            start = args[i++]
-            stop = args[i++]
-            ranges = this._getParaRanges(start, stop)
-            this._paintedParaRanges.push(...ranges)
-            rects = this._drawRanges(ranges)
-            this._paintedParaRects.push(...rects)
+            ranges = this._getParaRanges(args[i++], args[i++])
+            for (let j = 0, m = ranges.length, range, rects; j < m; j++) {
+                range = ranges[j]
+                this.paintedRanges.push(range)
+                rects = this._getRangeRects(range.x, range.y, range.n)
+                for (let k = 0, n = rects.length, rect; k < n; k++) {
+                    rect = rects[k]
+                    this.paintedRects.push(rect)
+                    this.drawRect(rect)
+                }
+            }
+        }
+    }
+
+    redrawRects () {
+        if (!this.paintedRects) {
+            return
+        }
+        this.clear()
+        for (let i = 0, l = this.paintedRects.length, rect; i < l; i++) {
+            rect = this.paintedRects[i]
+            this.drawRect(rect)
+        }
+    }
+
+    redrawRanges () {
+        if (!this.paintedRanges) {
+            return
+        }
+        this.clear()
+        this.paintedRects = []
+        for (let i = 0, l = this.paintedRanges.length, range, rects; i < l; i++) {
+            range = this.paintedRanges[i]
+            rects = this._getRangeRects(range.x, range.y, range.n)
+            for (let j = 0, m = rects.length, rect; j < m; j++) {
+                rect = rects[j]
+                this.paintedRects.push(rect)
+                this.drawRect(rect)
+            }
         }
     }
 }
