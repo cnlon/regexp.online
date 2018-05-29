@@ -13,6 +13,7 @@ const LINEBREAK_CLASS = 'fluor-editor_editor--linebreak'
 const LINE_FEED = /\r\n|\n/
 
 const rangeRectsCacheMap = new WeakMap()
+const scrollIntoViewIfNeeded = Element.prototype['scrollIntoViewIfNeeded']
 
 class Editor {
     /**
@@ -134,6 +135,7 @@ class Editor {
             event.preventDefault()
             const text = event.clipboardData.getData('text/plain')
             document.execCommand('insertText', false, text)
+            this.scrollCaretIntoViewIfNeeded()
         }
         this.editor.addEventListener('paste', this._editorPasteListener)
 
@@ -305,6 +307,27 @@ class Editor {
     clear () {
         this.canvas.width = this.canvas.width
         this.context.fillStyle = this.config.color
+    }
+
+    scrollCaretIntoViewIfNeeded () {
+        if (!scrollIntoViewIfNeeded) {
+            return
+        }
+        if (this._scrollCaretIntoViewIfNeededTimer) {
+            clearTimeout(this._scrollCaretIntoViewIfNeededTimer)
+        }
+        this._scrollCaretIntoViewIfNeededTimer = setTimeout(() => {
+            this._scrollCaretIntoViewIfNeededTimer = null
+            const selection = window.getSelection()
+            let paraNode = selection.focusNode
+            if (paraNode.parentElement !== this.editor) {
+                paraNode = paraNode.parentElement
+                if (paraNode.parentElement !== this.editor) {
+                    return
+                }
+            }
+            scrollIntoViewIfNeeded.call(paraNode)
+        })
     }
 
     drawRect (rect) {
