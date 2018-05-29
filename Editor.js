@@ -16,15 +16,6 @@ const rangeRectsCacheMap = new WeakMap()
 const scrollIntoViewIfNeeded = Element.prototype['scrollIntoViewIfNeeded']
 
 class Editor {
-    /**
-     * @param {string|HTMLElement} selector
-     * @param {object} [config = {}]
-     * @property {string} [config.color = HIGHLIGHT_COLOR]
-     * @property {boolean} [config.linebreak = true]
-     * @property {boolean} [config.windowAutoResize = true]
-     * @property {boolean} [config.windowAutoScroll = true]
-     */
-
     constructor (selector, {
         color = HIGHLIGHT_COLOR,
         linebreak = true,
@@ -189,27 +180,6 @@ class Editor {
         }
     }
 
-    resize () {
-        const {canvas} = this
-        const {width: oldWidth, height: oldHeight} = canvas
-        const newRect = canvas.getBoundingClientRect()
-        const {width, height, top, left} = newRect
-        if (width === oldWidth && height === oldHeight) {
-            return
-        }
-        canvas.width = width
-        canvas.height = height
-        const {context, config: {color}, scrollOrigin} = this
-        context.fillStyle = color
-        scrollOrigin.moveTo(left, top)
-        const paraNodes = this.editor.childNodes
-        for (let i = 0, l = paraNodes.length, paraNode; i < l; i++) {
-            paraNode = paraNodes[i]
-            rangeRectsCacheMap.delete(paraNode)
-        }
-        this.redrawRanges()
-    }
-
     _getRangeRects (start, stop, paraNode) {
         const key = `${start}:${stop}`
         if (!rangeRectsCacheMap.has(paraNode)) {
@@ -227,12 +197,13 @@ class Editor {
             stop
         )
         const {scrollLeft, scrollTop} = this.editor
+        const {x: scrollOriginX, y: scrollOriginY} = this.scrollOrigin
         const rectList = []
         for (let i = 0, l = clientRectList.length, clientRect; i < l; i++) {
             clientRect = clientRectList.item(i)
             rectList.push(new Rect(
-                clientRect.left + scrollLeft - this.scrollOrigin.x,
-                clientRect.top + scrollTop - this.scrollOrigin.y,
+                clientRect.left + scrollLeft - scrollOriginX,
+                clientRect.top + scrollTop - scrollOriginY,
                 clientRect.width,
                 clientRect.height
             ))
@@ -302,6 +273,27 @@ class Editor {
             }
         }
         return rangeList
+    }
+
+    resize () {
+        const {canvas} = this
+        const {width: oldWidth, height: oldHeight} = canvas
+        const newRect = canvas.getBoundingClientRect()
+        const {width, height, top, left} = newRect
+        if (width === oldWidth && height === oldHeight) {
+            return
+        }
+        canvas.width = width
+        canvas.height = height
+        const {context, config: {color}, scrollOrigin} = this
+        context.fillStyle = color
+        scrollOrigin.moveTo(left, top)
+        const paraNodes = this.editor.childNodes
+        for (let i = 0, l = paraNodes.length, paraNode; i < l; i++) {
+            paraNode = paraNodes[i]
+            rangeRectsCacheMap.delete(paraNode)
+        }
+        this.redrawRanges()
     }
 
     clear () {
@@ -390,6 +382,5 @@ class Editor {
         }
     }
 }
-
 
 export default Editor
