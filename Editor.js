@@ -116,10 +116,10 @@ class Editor {
             paraNode = paraNodes.item(i)
             text = paraContents[i]
             if (paraNode) {
-                if (paraNode.innerText === text) {
+                if (paraNode.textContent === text) {
                     continue
                 }
-                paraNode.innerText = text
+                paraNode.textContent = text
                 continue
             }
             paraNode = createParaNode(text)
@@ -249,7 +249,7 @@ class Editor {
         let paraNode, paraLength, startOffset
         for (let i = 0, l = paraNodes.length; i < l && paraOffset >= 0; (i++, paraOffset--)) {
             paraNode = paraNodes[i]
-            paraLength = paraNode.innerText.length
+            paraLength = paraNode.textContent.length
             if (begined === false) {
                 if (paraOffset >= paraLength) {
                     paraOffset -= paraLength
