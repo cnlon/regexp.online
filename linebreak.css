@@ -5,10 +5,9 @@
     content: " ";
     position: absolute;
     bottom: 0;
-    margin-left: 1px;
     background-image: url(linebreak.svg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    opacity: .3;
+    opacity: .25;
 }
