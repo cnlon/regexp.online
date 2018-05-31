@@ -149,6 +149,28 @@ class Editor {
             subtree: true,
         })
 
+        this._paraNodesObserver = new MutationObserver(mutations => {
+            const mutation = mutations[mutations.length - 1]
+            if (mutation.type !== 'childList') {
+                return
+            }
+            let paraNode
+            if (mutation.addedNodes.length !== 0) {
+                paraNode = mutation.previousSibling
+            } else if (mutation.removedNodes.length !== 0) {
+                paraNode = mutation.nextSibling
+            } else {
+                return
+            }
+            while (paraNode) {
+                rangeRectsCacheMap.delete(paraNode)
+                paraNode = paraNode.nextSibling
+            }
+        })
+        this._paraNodesObserver.observe(this.editor, {
+            childList: true,
+        })
+
         if (this.config.windowAutoResize) {
             this._windowResizeListener = () => this.resize()
             window.addEventListener('resize', this._windowResizeListener)
@@ -169,6 +191,8 @@ class Editor {
         this._editorPasteListener = null
         this._paraContentObserver.disconnect()
         this._paraContentObserver = null
+        this._paraNodesObserver.disconnect()
+        this._paraNodesObserver = null
 
         if (this._windowResizeListener) {
             window.removeEventListener('resize', this._windowResizeListener)
