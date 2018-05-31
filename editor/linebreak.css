@@ -1,0 +1,13 @@
+.fluor-editor_editor--linebreak>div {
+    position: relative;
+}
+.fluor-editor_editor--linebreak>div::after {
+    content: " ";
+    position: absolute;
+    bottom: 0;
+    background-image: url(linebreak.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: .25;
+}

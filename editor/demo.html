@@ -3,11 +3,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>fluor-editor demo</title>
-<link rel="stylesheet" href="./Editor.css">
+<link rel="stylesheet" href="./editor.css">
+<link rel="stylesheet" href="./linebreak.css">
 <style>
     body {
         margin: 0;
     }
+
     main {
         width: 80vw;
         min-width: 300px;
@@ -16,32 +18,34 @@
         margin-top: 10vh;
         margin-left: 10vw;
     }
+
     #editor {
         padding: 30px;
         font-size: 20px;
-        line-height: 1.5;
         background-color: #eee;
     }
 </style>
 <script type="module">
-import Editor from './index.js'
+    import Editor from './index.js'
+    import debounce from './debounce.js'
 
-const editor = new Editor('#editor')
+    const editor = new Editor('#editor')
+    editor.draw(18, 19, 622, 629)
 
-editor.editor.scrollTop = 40
-editor.draw(0, 1, 1, 2, 12, 314)
-
-window.editor = editor
+    window.editor = editor
 </script>
+
 <body>
     <main>
-        <div id="editor">hello world! hello world!
-    hello world!
-
-  hello world! he
-llo world! hello wor
-ld! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world!
+        <div id="editor" class="fluor-editor">hello world! hello world! hello world! hello world! he llo world! hello wor ld! hello world! hello world! hello world!
+            1hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello
+            2world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world!
+            3hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello
+            4world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world!
+            5hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello
+            6world! hello world! hello world! hello world! hello world!
         </div>
     </main>
 </body>
+
 </html>
