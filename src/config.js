@@ -1,5 +1,5 @@
 import {MODE_LIST, MODE_REPLACE, MODE_NONE} from './types'
-import regexps from './regexps.json'
+import * as regexps from './regexps'
 
 
 export const defaultResolve = {

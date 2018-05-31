@@ -16,7 +16,7 @@
 
 <script>
 import {BOX_NONE} from '../types'
-import regexps from '../regexps'
+import * as regexps from '../regexps'
 import bus from '../bus.js'
 
 

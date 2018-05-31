@@ -1,4 +1,5 @@
 const path = require('path')
+const {VueLoaderPlugin} = require('vue-loader')
 
 module.exports = {
     entry: {
@@ -25,14 +26,14 @@ module.exports = {
                 path.resolve(__dirname, '../src/worker/worker.js')
             ]
         }, {
-            test: /\.json$/,
-            loader: 'json-loader'
-        }, {
-            test: /\.(ico|png|woff2)$/,
+            test: /\.(svg|ico|png|woff2)$/,
             loader: 'file-loader',
             options: {
                 name: '[name].[ext]'
             }
         }]
-    }
+    },
+    plugins: [
+        new VueLoaderPlugin()
+    ]
 }

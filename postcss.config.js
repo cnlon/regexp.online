@@ -4,7 +4,8 @@ module.exports = function (webpack) {
             'postcss-import': require('postcss-import')({
                 addDependencyTo: webpack
             }),
-            'postcss-cssnext': require('postcss-cssnext')()
+            'postcss-url': require('postcss-url')(),
+            'postcss-cssnext': require('postcss-cssnext')(),
         }
     }
 }

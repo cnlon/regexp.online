@@ -70,12 +70,12 @@ export default {
             switch (method) {
                 case PARSE:
                     this.sourceIsError = false
-                    this.output = data.output
                     this.$refs.input.paint(data.matches)
+                    this.output = data.output
                     break
                 case ERROR:
                     this.sourceIsError = true
-                    this.$refs.input.clear()
+                    this.$refs.input.paint()
                     break
                 case READY:
                     const lastState = {
@@ -147,8 +147,7 @@ export default {
         post () {
             const {source, input} = this
             if (!source || !input || input === '\n') {
-                const inputChild = this.$refs.input
-                inputChild.paint(null)
+                this.$refs.input.paint()
                 return
             }
             const data = {

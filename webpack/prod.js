@@ -5,6 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const PUBLIC_PATH = process.env.PUBLIC_PATH || '/'
 
 module.exports = {
+    mode: 'production',
     output: {
         path: path.resolve(__dirname, '../dist'),
         filename: '[name].[chunkhash:6].js',

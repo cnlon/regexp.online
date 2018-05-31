@@ -2,10 +2,12 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
+    mode: 'development',
     output: {
         path: path.resolve(__dirname, '../build'),
         filename: '[name].js',
         publicPath: '/',
+        globalObject: 'this'
     },
     module: {
         rules: [{
