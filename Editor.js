@@ -218,7 +218,7 @@ class Editor {
         let paraOffset = start
         let begined = false
         let paraNode, paraLength, startOffset
-        for (let i = 0, l = paraNodes.length; i < l && paraOffset >= 0; (i++, paraOffset--)) {
+        for (let i = 0, l = paraNodes.length; i < l && paraOffset >= 0; (i++ , paraOffset--)) {
             paraNode = paraNodes[i]
             paraLength = paraNode.textContent.length
             if (begined === false) {
